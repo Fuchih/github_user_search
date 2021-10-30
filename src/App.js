@@ -4,17 +4,22 @@ import List from './components/List/List'
 import './App.css'
 
 export default class App extends React.Component {
-  state = { users: [] }
+  state = {
+    users: [],
+    isFirstRender: true,
+    isLoading: false,
+    err: ''
+  }
 
-  saveUsers = (users) => {
-    this.setState({ users })
+  updateState = (stateObj) => {
+    this.setState(stateObj)
   }
 
   render() {
     return (
       <div className="container">
-        <Search saveUsers={this.saveUsers} />
-        <List users={this.state.users} />
+        <Search updateState={this.updateState} />
+        <List {...this.state} />
       </div>
     )
   }

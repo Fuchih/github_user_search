@@ -1,15 +1,16 @@
 import React from 'react'
-import axios from 'axios';
+import axios from 'axios'
 
 export default class Search extends React.Component {
-  state = {
-    keywords: ''
-  }
-
   search = async () => {
-    const { keywordElement:{value: keyWord} } = this
-    const res = await axios.get(`https://api.github.com/search/users?q=${keyWord}`)
-    this.props.saveUsers(res.data.items)
+    try {
+      const { keywordElement: { value: keyWord }} = this
+      this.props.updateState({ isFirstRender: false, isLoading: true })
+      const res = await axios.get(`https://api.github.com/search/users?q=${keyWord}`)
+      this.props.updateState({ isLoading: false, users: res.data.items })
+    } catch (error) {
+      this.props.updateState({ isLoading: false, err: error.message })
+    }
   }
 
   render() {
@@ -18,7 +19,7 @@ export default class Search extends React.Component {
         <section>
           <h1>Search Github Users</h1>
           <div>
-            <input ref={(c) => (this.keywordElement = c)} type="text" placeholder="enter the name..." />
+            <input ref={(c) => (this.keywordElement = c)} type="text" defaultValue="fuchih" />
             &nbsp;
             <button onClick={this.search} className="btn-primary">
               Search
